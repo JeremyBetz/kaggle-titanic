@@ -54,6 +54,20 @@ All experiment comparisons use the same five shuffled stratified folds (`random_
 | Experiment | Engineered features | Fold accuracies | Mean accuracy | Standard deviation | Kaggle public score |
 | --- | --- | --- | ---: | ---: | ---: |
 | 1 — Baseline | None | 0.7821, 0.8034, 0.7978, 0.7809, 0.8202 | 0.7969 | 0.0146 | 0.76555 |
-| 2 — Feature engineering | `Title`, `IsAlone` | 0.8380, 0.8146, 0.8371, 0.8315, 0.8315 | 0.8305 | 0.0084 | Not submitted |
+| 2 — Feature engineering | `Title`, `IsAlone` | 0.8380, 0.8146, 0.8371, 0.8315, 0.8315 | 0.8305 | 0.0084 | 0.77272 |
+| 3 — Model comparison | `Title`, `IsAlone`; Gradient Boosting | 0.8547, 0.8483, 0.8258, 0.8315, 0.8371 | 0.8395 | 0.0107 | Not submitted |
 
 Experiment 2 evaluates `FamilySize`, `IsAlone`, `Title`, cabin availability, cabin deck, and leakage-safe ticket group size individually, then uses conservative forward selection. The final model improves mean local CV accuracy by 0.0336 over baseline. See `notebooks/02_feature_engineering.ipynb` for hypotheses, fold-level results (including negative results), selection details, and submission verification.
+
+## Experiment 3 model comparison
+
+Experiment 3 holds the final Experiment 2 features and folds fixed while comparing conservative, untuned model families.
+
+| Model | Fold accuracies | Mean accuracy | Standard deviation | Delta vs logistic |
+| --- | --- | ---: | ---: | ---: |
+| Logistic Regression | 0.8380, 0.8146, 0.8371, 0.8315, 0.8315 | 0.8305 | 0.0084 | — |
+| Random Forest | 0.8268, 0.7978, 0.7809, 0.8258, 0.8202 | 0.8103 | 0.0181 | -0.0202 |
+| Histogram Gradient Boosting | 0.8492, 0.8315, 0.7978, 0.8202, 0.8596 | 0.8316 | 0.0217 | +0.0011 |
+| Gradient Boosting | 0.8547, 0.8483, 0.8258, 0.8315, 0.8371 | 0.8395 | 0.0107 | +0.0090 |
+
+Gradient boosting is selected as the Experiment 3 candidate: it improves three paired folds, ties one, and loses one. The gain is reasonably consistent but modest, so it supports a cautious experimental Kaggle submission rather than a strong claim of superiority. See `notebooks/03_model_comparison.ipynb` for preprocessing, timings, tradeoffs, selection reasoning, and submission verification.
