@@ -55,7 +55,7 @@ All experiment comparisons use the same five shuffled stratified folds (`random_
 | --- | --- | --- | ---: | ---: | ---: |
 | 1 — Baseline | None | 0.7821, 0.8034, 0.7978, 0.7809, 0.8202 | 0.7969 | 0.0146 | 0.76555 |
 | 2 — Feature engineering | `Title`, `IsAlone` | 0.8380, 0.8146, 0.8371, 0.8315, 0.8315 | 0.8305 | 0.0084 | 0.77272 |
-| 3 — Model comparison | `Title`, `IsAlone`; Gradient Boosting | 0.8547, 0.8483, 0.8258, 0.8315, 0.8371 | 0.8395 | 0.0107 | Not submitted |
+| 3 — Model comparison | `Title`, `IsAlone`; Gradient Boosting | 0.8547, 0.8483, 0.8258, 0.8315, 0.8371 | 0.8395 | 0.0107 | 0.77511 |
 
 Experiment 2 evaluates `FamilySize`, `IsAlone`, `Title`, cabin availability, cabin deck, and leakage-safe ticket group size individually, then uses conservative forward selection. The final model improves mean local CV accuracy by 0.0336 over baseline. See `notebooks/02_feature_engineering.ipynb` for hypotheses, fold-level results (including negative results), selection details, and submission verification.
 
@@ -71,3 +71,9 @@ Experiment 3 holds the final Experiment 2 features and folds fixed while compari
 | Gradient Boosting | 0.8547, 0.8483, 0.8258, 0.8315, 0.8371 | 0.8395 | 0.0107 | +0.0090 |
 
 Gradient boosting is selected as the Experiment 3 candidate: it improves three paired folds, ties one, and loses one. The gain is reasonably consistent but modest, so it supports a cautious experimental Kaggle submission rather than a strong claim of superiority. See `notebooks/03_model_comparison.ipynb` for preprocessing, timings, tradeoffs, selection reasoning, and submission verification.
+
+## Experiment 4 validation robustness
+
+Using the unchanged Experiment 2 features and unchanged model hyperparameters, Experiment 4 compares logistic regression and gradient boosting over 20 random seeds × 5 paired stratified folds. Gradient boosting averages 0.8325 accuracy across all 100 folds versus 0.8269 for logistic regression. Its mean seed-level paired advantage is +0.0056 (median +0.0062), with 17 wins, 0 ties, and 3 losses across seeds. A 20,000-resample paired seed-bootstrap gives a descriptive 95% interval of [+0.0031, +0.0078].
+
+The seed-42 advantage of +0.0090 is larger than the repeated-validation average, so its magnitude is split-sensitive, but the positive direction is reasonably robust. Gradient boosting remains the current champion, with a modest expected advantage rather than a decisive one. No new submission was created. See `notebooks/04_validation_robustness.ipynb` for every fold and seed result, visualizations, bootstrap details, and limitations.
